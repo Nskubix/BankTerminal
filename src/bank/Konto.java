@@ -19,8 +19,7 @@ public class Konto extends AccountManager {
     }
 
     @Override
-    public void createAccount(){
-
+    public void createAccount() {
+        super.createAccount();
     }
-
 }
