@@ -62,4 +62,55 @@ public class AccountManager {
         }
     }
 
+    public boolean isInputEqual(String providedLogin,String providedPassword) throws FileNotFoundException {
+        try {
+            FileReader freader = new FileReader(LOCATION_OF_THE_FILE);//created an object of freader class
+            @SuppressWarnings("resource")
+            CSVReader creader = new CSVReader(freader);// created creader object by parsing freader as a parameter
+            String[] nextRecord; // nextRecord = whole line
+            while ((nextRecord = creader.readNext()) != null) {
+                if(nextRecord[0].equals(providedLogin) && nextRecord[1].equals(providedPassword)){
+                    return true;
+                }
+
+            }
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+    public Konto login(){
+        Scanner myScanner = new Scanner(System.in);
+        System.out.print("Podaj login: ");
+        String providedLogin = myScanner.nextLine();
+        System.out.println("");
+        System.out.print("Podaj hasło: ");
+        String providedPassword = myScanner.nextLine();
+        System.out.println(" ");
+        String[] lista = null;
+        try{
+            if(isInputEqual(providedLogin,providedPassword)){
+                lista = new String[]{providedLogin,providedPassword,"0"};
+            } else{
+                System.out.println("Niepoprawny login lub hasło Spróbuj ponownie");
+                Thread.sleep(3000);
+                System.exit(123);
+            }
+        } catch (FileNotFoundException | InterruptedException e){
+            e.printStackTrace();
+        }
+
+
+        Konto konto = null;
+        if(lista != null){
+            konto = new Konto(lista);
+        }
+
+        return konto;
+    }
+
 }

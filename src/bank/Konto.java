@@ -6,6 +6,19 @@ public class Konto extends AccountManager {
     private String password;
     private String login;
 
+    public Konto(String[] lista) {
+        this.login = lista[0];
+        this.password = lista[1];
+        this.balance = Integer.parseInt(lista[2]);
+
+
+
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
     public int getBalance() {
         return balance;
     }
@@ -19,7 +32,11 @@ public class Konto extends AccountManager {
     }
 
     @Override
-    public void createAccount() {
-        super.createAccount();
+    public String toString() {
+        return "Konto{" +
+                "balance=" + balance  +
+                ", password='" + password + '\'' +
+                ", login='" + login + '\'' +
+                '}';
     }
 }
