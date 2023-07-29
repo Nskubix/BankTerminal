@@ -1,5 +1,4 @@
 package bank;
-import java.sql.Struct;
 import java.util.Scanner;
 import java.io.*;
 import com.opencsv.CSVReader;
@@ -8,7 +7,7 @@ import com.opencsv.CSVWriter;
 import java.io.FileReader;
 
 public class AccountManager {
-    private static String LOCATION_OF_THE_FILE = "E:\\Kuba\\Programowanie\\JavaIntellij\\BankTerminal\\src\\bank\\accounts.csv"; // zmień to na swoją ścieżke
+    public static String LOCATION_OF_THE_FILE = "src/bank/accounts.csv";
 
     public void createAccount(){
         Scanner myScn = new Scanner(System.in);
@@ -32,18 +31,15 @@ public class AccountManager {
 
             // closing writer connection
             writer.close();
+            outputfile.close();
         }
+
         catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-
-
-        myScn.close();
     }
 
-    public void readAllAccounts() throws FileNotFoundException {
+    public String readBalanceFromLogin(String providedLogin) throws FileNotFoundException {
         try {
             FileReader freader = new FileReader(LOCATION_OF_THE_FILE);//created an object of freader class
             @SuppressWarnings("resource")
@@ -51,15 +47,48 @@ public class AccountManager {
             String[] nextRecord; // nextRecord = whole line
             while ((nextRecord = creader.readNext()) != null) {
                 for(String token:nextRecord){
-                    System.out.print(token+" ");
+                    if(token.equals(providedLogin)){
+                       return nextRecord[2];
+                    }
+
                 }
                 System.out.println("");
             }
             System.out.println();
+            freader.close();
+            creader.close();
         } catch (Exception e)
         {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    public int returnColumnNumberFromLogin(String providedLogin) throws FileNotFoundException {
+        try {
+            FileReader freader = new FileReader(LOCATION_OF_THE_FILE);//created an object of freader class
+            @SuppressWarnings("resource")
+            CSVReader creader = new CSVReader(freader);// created creader object by parsing freader as a parameter
+            String[] nextRecord; // nextRecord = whole line
+            int i = 0;
+            while ((nextRecord = creader.readNext()) != null) {
+                for(String token:nextRecord){
+                    if(token.equals(providedLogin)){
+                        return i;
+                    }
+
+                }
+                i++;
+            }
+
+            System.out.println();
+            freader.close();
+            creader.close();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public boolean isInputEqual(String providedLogin,String providedPassword) throws FileNotFoundException {
@@ -74,12 +103,16 @@ public class AccountManager {
                 }
 
             }
+            freader.close();
+            creader.close();
         } catch (Exception e)
         {
             e.printStackTrace();
         }
         return false;
     }
+
+
 
 
 
@@ -94,13 +127,12 @@ public class AccountManager {
         String[] lista = null;
         try{
             if(isInputEqual(providedLogin,providedPassword)){
-                lista = new String[]{providedLogin,providedPassword,"0"};
+                lista = new String[]{providedLogin,providedPassword,readBalanceFromLogin(providedLogin)};
             } else{
                 System.out.println("Niepoprawny login lub hasło Spróbuj ponownie");
-                Thread.sleep(3000);
-                System.exit(123);
+                System.exit(-9);
             }
-        } catch (FileNotFoundException | InterruptedException e){
+        } catch (FileNotFoundException e){
             e.printStackTrace();
         }
 
@@ -112,5 +144,6 @@ public class AccountManager {
 
         return konto;
     }
+
 
 }
